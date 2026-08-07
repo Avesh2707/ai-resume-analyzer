@@ -2,67 +2,82 @@
 @tailwind components;
 @tailwind utilities;
 
+/**
+ * Design tokens — "Ink & Highlight"
+ *
+ * The product marks up and scores documents, so the palette pairs a
+ * disciplined ink-navy (structure, trust) with a single warm amber
+ * "highlighter" accent reserved for marking the important thing on a page —
+ * mirroring how the product highlights keywords on a resume. The amber is
+ * deliberately NOT the primary/button color, so it stays meaningful.
+ */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 210 25% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 243 75% 59%;
+    --primary: 224 64% 33%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 30% 95%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 25% 95%;
+    --muted-foreground: 215 16% 42%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 210 30% 95%;
+    --accent-foreground: 222 47% 11%;
 
-    --destructive: 0 84.2% 60.2%;
+    --highlight: 38 92% 50%;
+    --highlight-foreground: 26 60% 15%;
+
+    --destructive: 0 72% 51%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 243 75% 59%;
+    --border: 214 25% 89%;
+    --input: 214 25% 89%;
+    --ring: 224 64% 33%;
 
     --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 222 47% 7%;
+    --foreground: 210 30% 96%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 222 44% 10%;
+    --card-foreground: 210 30% 96%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 222 44% 10%;
+    --popover-foreground: 210 30% 96%;
 
-    --primary: 243 75% 65%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 221 70% 65%;
+    --primary-foreground: 222 47% 9%;
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 30% 16%;
+    --secondary-foreground: 210 30% 96%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 220 30% 15%;
+    --muted-foreground: 215 18% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 220 30% 16%;
+    --accent-foreground: 210 30% 96%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --highlight: 38 88% 58%;
+    --highlight-foreground: 26 60% 12%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 243 75% 65%;
+    --destructive: 0 63% 42%;
+    --destructive-foreground: 210 30% 96%;
+
+    --border: 220 25% 18%;
+    --input: 220 25% 18%;
+    --ring: 221 70% 65%;
   }
 }
 
@@ -71,6 +86,26 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display;
+  }
+}
+
+@layer utilities {
+  /* "Highlighter" signature motif — a soft marker-stroke behind key words,
+     evoking the product marking up a resume. */
+  .mark-highlight {
+    background: linear-gradient(
+      to top,
+      hsl(var(--highlight) / 0.35) 0%,
+      hsl(var(--highlight) / 0.35) 38%,
+      transparent 38%
+    );
+    padding: 0 0.15em;
   }
 }
