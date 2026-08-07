@@ -10,15 +10,15 @@
 
 ---
 
-## 📌 Current Status: Phase 1
+## 📌 Current Status: Phase 2
 
-This phase delivers **only** the initial project scaffold: a working frontend, a
-working backend with a single health-check endpoint, and all the tooling
-(TypeScript, ESLint, Prettier, path aliases) needed to build on top of it in
-later phases.
+Phase 2 builds a **professional SaaS application shell** on top of the Phase 1
+scaffold: responsive navbar, collapsible sidebar, light/dark theme, React
+Router page structure, and placeholder marketing pages. Everything is UI only
+— no forms, no API calls beyond the existing health check, no business logic.
 
 **Not implemented yet (by design):** authentication, database, AI/LLM
-integration, resume upload, resume analysis, dashboard, profile, chat, history.
+integration, resume upload, resume analysis, dashboard logic, chat, history.
 See [`docs/ROADMAP.md`](./docs/ROADMAP.md).
 
 ---
@@ -54,10 +54,14 @@ See [`docs/ROADMAP.md`](./docs/ROADMAP.md).
 AI-Resume-Analyzer/
 ├── client/               # React + TypeScript + Vite frontend
 │   ├── src/
-│   │   ├── components/ui # shadcn/ui components
-│   │   ├── lib/           # utils, axios instance
-│   │   ├── pages/         # Home page
-│   │   ├── App.tsx
+│   │   ├── components/
+│   │   │   ├── layout/     # Navbar, Sidebar, Footer, PublicLayout, AppShellLayout
+│   │   │   ├── theme/      # ThemeProvider, ThemeToggle
+│   │   │   └── ui/         # shadcn/ui primitives (Button, Card, Badge, Sheet, Separator)
+│   │   ├── config/         # nav.ts, app-nav.ts (static nav item lists)
+│   │   ├── lib/             # utils (cn), axios instance
+│   │   ├── pages/           # Home, About, Features, Pricing, AppPreview, NotFound
+│   │   ├── App.tsx          # Route tree
 │   │   ├── main.tsx
 │   │   └── index.css
 │   ├── index.html
@@ -105,30 +109,25 @@ environment variables, production builds, and troubleshooting.
 
 ---
 
-## ✅ What's in Phase 1
+## ✅ What's in Phase 2
 
-### Frontend
-A single **Home page** rendering exactly:
+### Application shell
+- **Navbar** — sticky, responsive, mobile menu opens a slide-in drawer (shadcn/ui `Sheet`)
+- **Sidebar** — collapsible (icon-only collapsed state), used by the `/app` shell-preview route
+- **Theme toggle** — light/dark, persisted via `localStorage`, respects system preference on first load
+- **404 page** — friendly not-found screen with a way back home
 
-```
-AI Resume Analyzer
-Production Ready Initial Setup
-```
+### Pages (static placeholders, no functionality)
+| Route | Page |
+|---|---|
+| `/` | Home — hero, illustrative stats, mock "annotated resume" visual |
+| `/about` | About — mission/values placeholder |
+| `/features` | Features — 6-item feature grid placeholder |
+| `/pricing` | Pricing — 3-tier static pricing cards |
+| `/app` | Application shell preview — sidebar + topbar layout, clearly labeled as a UI preview (not a real dashboard) |
+| `*` | 404 Not Found |
 
-No buttons, no forms, no other UI.
-
-### Backend
-A single endpoint:
-
-```
-GET /api/health
-```
-
-Response:
-
-```json
-{ "status": "ok" }
-```
+No forms, no API calls beyond the Phase 1 health check, no auth, no database, no AI.
 
 ---
 
