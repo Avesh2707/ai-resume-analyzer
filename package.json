@@ -1,0 +1,30 @@
+{
+  "name": "ai-resume-analyzer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Resume Analyzer - Production Ready Monorepo (Phase 1: Initial Setup)",
+  "workspaces": [
+    "client",
+    "server",
+    "shared"
+  ],
+  "scripts": {
+    "dev": "concurrently -n CLIENT,SERVER -c blue,green \"npm run dev --workspace=client\" \"npm run dev --workspace=server\"",
+    "dev:client": "npm run dev --workspace=client",
+    "dev:server": "npm run dev --workspace=server",
+    "build": "npm run build --workspace=client && npm run build --workspace=server",
+    "build:client": "npm run build --workspace=client",
+    "build:server": "npm run build --workspace=server",
+    "lint": "npm run lint --workspace=client && npm run lint --workspace=server",
+    "format": "prettier --write .",
+    "clean": "rimraf client/dist server/dist client/node_modules server/node_modules shared/node_modules node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prettier": "^3.3.3",
+    "rimraf": "^5.0.7"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
