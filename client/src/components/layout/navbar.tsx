@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { FileSearch, Menu } from 'lucide-react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { FileSearch, Menu, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { primaryNav } from '@/config/nav';
 import { sidebarNav } from '@/config/sidebar-nav';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/context/auth-context';
 
 function Logo() {
   return (
@@ -23,6 +24,13 @@ function Logo() {
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-border/80 bg-background/85 backdrop-blur supports-[backdrop-filter]:bg-background/70">
@@ -50,9 +58,26 @@ export function Navbar() {
 
         <div className="hidden items-center gap-2 md:flex">
           <ThemeToggle />
-          <Button size="sm" asChild>
-            <Link to="/pricing">Get started</Link>
-          </Button>
+          {user ? (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/dashboard">Dashboard</Link>
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/login">Login</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link to="/register">Get started</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile controls */}
@@ -106,10 +131,28 @@ export function Navbar() {
                 </div>
               </div>
 
-              <div className="mt-auto pt-6">
-                <Button className="w-full" asChild onClick={() => setMobileOpen(false)}>
-                  <Link to="/pricing">Get started</Link>
-                </Button>
+              <div className="mt-auto pt-6 flex flex-col gap-2">
+                {user ? (
+                  <>
+                    <Button className="w-full" asChild onClick={() => setMobileOpen(false)}>
+                      <Link to="/dashboard">
+                        <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
+                      </Link>
+                    </Button>
+                    <Button variant="outline" className="w-full" onClick={() => { handleLogout(); setMobileOpen(false); }}>
+                      <LogOut className="mr-2 h-4 w-4" /> Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="outline" className="w-full" asChild onClick={() => setMobileOpen(false)}>
+                      <Link to="/login">Login</Link>
+                    </Button>
+                    <Button className="w-full" asChild onClick={() => setMobileOpen(false)}>
+                      <Link to="/register">Get started</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </SheetContent>
           </Sheet>
