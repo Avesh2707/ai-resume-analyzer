@@ -29,3 +29,38 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
+// --- Resume API Helpers ---
+
+export interface ResumeData {
+  id: string;
+  originalName: string;
+  fileSize: number;
+  mimeType: string;
+  createdAt: string;
+  textLength?: number;
+  extractedText?: string;
+}
+
+export const uploadResume = async (formData: FormData): Promise<ResumeData> => {
+  const response = await api.post('/resumes/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data.data;
+};
+
+export const getResumes = async (): Promise<ResumeData[]> => {
+  const response = await api.get('/resumes');
+  return response.data.data;
+};
+
+export const getResume = async (id: string): Promise<ResumeData> => {
+  const response = await api.get(`/resumes/${id}`);
+  return response.data.data;
+};
+
+export const deleteResume = async (id: string): Promise<void> => {
+  await api.delete(`/resumes/${id}`);
+};

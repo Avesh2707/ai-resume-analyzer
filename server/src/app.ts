@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { env } from '@/config/env';
 import healthRoute from '@/routes/health.route';
 import authRoute from '@/routes/auth.route';
+import resumeRoute from '@/routes/resume.route';
 import { errorHandler } from '@/middleware/error.middleware';
 
 const app: Application = express();
@@ -14,6 +15,7 @@ app.use(cookieParser());
 
 app.use('/api', healthRoute);
 app.use('/api/auth', authRoute);
+app.use('/api/resumes', resumeRoute);
 
 app.use(errorHandler);
 

@@ -13,6 +13,7 @@ import NotFound from '@/pages/NotFound';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 import Overview from '@/pages/dashboard/Overview';
+import ResumeDetails from '@/pages/dashboard/ResumeDetails';
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<Overview />} />
+            <Route path="/dashboard/resumes/:id" element={<ResumeDetails />} />
           </Route>
         </Route>
       </Routes>
