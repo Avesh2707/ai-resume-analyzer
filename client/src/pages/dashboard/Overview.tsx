@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { ResumeUploader } from '@/components/resume/resume-uploader';
 import { getResumes, deleteResume, type ResumeData } from '@/lib/api';
-import { FileText, Trash2, Eye, Loader2, AlertCircle } from 'lucide-react';
+import { FileText, Trash2, Loader2, AlertCircle } from 'lucide-react';
 import axios from 'axios';
 
 export default function Overview() {
@@ -101,16 +101,25 @@ export default function Overview() {
                         <FileText className="h-4 w-4" />
                       </div>
                       <div className="truncate">
-                        <p className="truncate text-sm font-medium">{resume.originalName}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(resume.createdAt).toLocaleDateString()}
+                        <p className="truncate text-sm font-medium flex items-center gap-2">
+                          {resume.originalName}
+                          {resume.hasAnalysis && (
+                            <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                              ATS: {resume.atsScore}
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-xs text-muted-foreground flex items-center space-x-2 mt-0.5">
+                          <span>{new Date(resume.createdAt).toLocaleDateString()}</span>
+                          <span>•</span>
+                          <span>{(resume.fileSize / 1024).toFixed(1)} KB</span>
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-1 shrink-0">
-                      <Button variant="ghost" size="icon" asChild>
+                    <div className="flex items-center space-x-2 shrink-0">
+                      <Button variant={resume.hasAnalysis ? "outline" : "default"} size="sm" asChild>
                         <Link to={`/dashboard/resumes/${resume.id}`}>
-                          <Eye className="h-4 w-4" />
+                          {resume.hasAnalysis ? 'View Analysis' : 'Analyze'}
                         </Link>
                       </Button>
                       <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10" onClick={() => handleDelete(resume.id)}>

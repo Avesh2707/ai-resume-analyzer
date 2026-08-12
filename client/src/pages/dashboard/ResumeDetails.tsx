@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getResume, deleteResume, type ResumeData } from '@/lib/api';
+import { getResume, deleteResume, analyzeResume, getResumeAnalysis, type ResumeData, type AnalysisData } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Trash2, FileText, Loader2, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Trash2, FileText, Loader2, AlertCircle, Bot } from 'lucide-react';
+import { AnalysisReport } from '@/components/resume/analysis-report';
 import axios from 'axios';
 
 export default function ResumeDetails() {
@@ -11,18 +12,35 @@ export default function ResumeDetails() {
   const navigate = useNavigate();
   
   const [resume, setResume] = useState<ResumeData | null>(null);
+  const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
+  
   const [loading, setLoading] = useState(true);
+  const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchResume = async () => {
+    const fetchResumeAndAnalysis = async () => {
       if (!id) return;
       
       try {
         setLoading(true);
         setError(null);
-        const data = await getResume(id);
-        setResume(data);
+        
+        // Fetch resume
+        const resumeData = await getResume(id);
+        setResume(resumeData);
+        
+        // Try to fetch existing analysis
+        try {
+          const analysisData = await getResumeAnalysis(id);
+          setAnalysis(analysisData);
+        } catch (err: unknown) {
+          // It's okay if analysis doesn't exist yet (404)
+          if (axios.isAxiosError(err) && err.response?.status !== 404) {
+            console.error('Failed to load analysis:', err);
+          }
+        }
+        
       } catch (err: unknown) {
         if (axios.isAxiosError(err)) {
           setError(err.response?.data?.message || 'Failed to load resume details.');
@@ -34,7 +52,7 @@ export default function ResumeDetails() {
       }
     };
 
-    fetchResume();
+    fetchResumeAndAnalysis();
   }, [id]);
 
   const handleDelete = async () => {
@@ -45,6 +63,24 @@ export default function ResumeDetails() {
       navigate('/dashboard', { replace: true });
     } catch (err) {
       alert('Failed to delete resume.');
+    }
+  };
+
+  const handleAnalyze = async () => {
+    if (!id) return;
+    
+    try {
+      setAnalyzing(true);
+      const data = await analyzeResume(id);
+      setAnalysis(data);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.message || 'Failed to analyze resume.');
+      } else {
+        alert('Failed to analyze resume.');
+      }
+    } finally {
+      setAnalyzing(false);
     }
   };
 
@@ -99,11 +135,55 @@ export default function ResumeDetails() {
           </div>
         </div>
         
-        <Button variant="destructive" onClick={handleDelete}>
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete
-        </Button>
+        <div className="flex items-center space-x-2">
+          <Button 
+            variant="outline" 
+            onClick={handleAnalyze} 
+            disabled={analyzing}
+            className="border-primary text-primary hover:bg-primary/10"
+          >
+            {analyzing ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Bot className="mr-2 h-4 w-4" />
+                {analysis ? 'Re-analyze Resume' : 'Analyze Resume'}
+              </>
+            )}
+          </Button>
+          <Button variant="destructive" onClick={handleDelete}>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
+          </Button>
+        </div>
       </div>
+      
+      {analysis ? (
+        <AnalysisReport analysis={analysis} />
+      ) : (
+        <Card className="bg-muted/50 border-dashed">
+          <CardContent className="flex flex-col items-center justify-center p-12 text-center">
+            <Bot className="h-12 w-12 text-muted-foreground mb-4 opacity-50" />
+            <h3 className="text-lg font-medium mb-2">No AI Analysis Yet</h3>
+            <p className="text-muted-foreground mb-6 max-w-md">
+              Unlock powerful insights, ATS scoring, and feedback by running our AI analyzer on this resume.
+            </p>
+            <Button onClick={handleAnalyze} disabled={analyzing}>
+              {analyzing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                'Run AI Analysis'
+              )}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
       
       <Card>
         <CardHeader>
@@ -112,11 +192,11 @@ export default function ResumeDetails() {
             <span>Extracted Text</span>
           </CardTitle>
           <CardDescription>
-            Raw text extracted from your PDF ({resume.textLength} characters).
+            Raw text extracted from your PDF ({resume.textLength || resume.extractedText?.length || 0} characters).
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border bg-muted/30 p-4 min-h-[400px] max-h-[600px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
+          <div className="rounded-md border bg-muted/30 p-4 min-h-[200px] max-h-[400px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
             {resume.extractedText}
           </div>
         </CardContent>

@@ -1,6 +1,7 @@
 import type { Response } from 'express';
 import type { AuthRequest } from '@/middleware/auth.middleware';
 import { Resume } from '@/models/Resume.model';
+import { Analysis } from '@/models/Analysis.model';
 import { extractTextFromPDF } from '@/services/pdf.service';
 
 export const uploadResume = async (req: AuthRequest, res: Response) => {
@@ -50,13 +51,23 @@ export const getResumes = async (req: AuthRequest, res: Response) => {
     .sort({ createdAt: -1 })
     .select('-extractedText'); // Do not return full text in list
 
-  const mappedResumes = resumes.map(r => ({
-    id: r._id,
-    originalName: r.originalName,
-    fileSize: r.fileSize,
-    mimeType: r.mimeType,
-    createdAt: r.createdAt,
-  }));
+  // Fetch all analyses for the user to join the data
+  const analyses = await Analysis.find({ userId: req.user!.userId });
+  const analysisMap = new Map();
+  analyses.forEach(a => analysisMap.set(a.resumeId.toString(), a));
+
+  const mappedResumes = resumes.map(r => {
+    const analysis = analysisMap.get(r._id.toString());
+    return {
+      id: r._id,
+      originalName: r.originalName,
+      fileSize: r.fileSize,
+      mimeType: r.mimeType,
+      createdAt: r.createdAt,
+      hasAnalysis: !!analysis,
+      atsScore: analysis ? analysis.atsScore : null,
+    };
+  });
 
   res.status(200).json({
     success: true,

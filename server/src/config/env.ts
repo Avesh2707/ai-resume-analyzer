@@ -10,4 +10,5 @@ export const env = {
   jwtSecret: process.env.JWT_SECRET || 'fallback-secret-do-not-use-in-prod',
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '7d',
   authCookieName: process.env.AUTH_COOKIE_NAME || 'resume_ai_session',
+  geminiApiKey: process.env.GEMINI_API_KEY || '',
 };

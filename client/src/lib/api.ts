@@ -40,6 +40,8 @@ export interface ResumeData {
   createdAt: string;
   textLength?: number;
   extractedText?: string;
+  hasAnalysis?: boolean;
+  atsScore?: number | null;
 }
 
 export const uploadResume = async (formData: FormData): Promise<ResumeData> => {
@@ -63,4 +65,45 @@ export const getResume = async (id: string): Promise<ResumeData> => {
 
 export const deleteResume = async (id: string): Promise<void> => {
   await api.delete(`/resumes/${id}`);
+};
+
+// --- Analysis API Helpers ---
+
+export interface JobMatch {
+  score: number;
+  explanation: string;
+}
+
+export interface AnalysisData {
+  _id: string;
+  userId: string;
+  resumeId: string;
+  atsScore: number;
+  summary: string;
+  strengths: string[];
+  weaknesses: string[];
+  skills: string[];
+  missingSkills: string[];
+  keywords: string[];
+  missingKeywords: string[];
+  experienceLevel: string;
+  formattingIssues: string[];
+  suggestions: string[];
+  jobMatch?: JobMatch;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const analyzeResume = async (id: string): Promise<AnalysisData> => {
+  const response = await api.post(`/resumes/${id}/analyze`);
+  return response.data.data;
+};
+
+export const getResumeAnalysis = async (id: string): Promise<AnalysisData> => {
+  const response = await api.get(`/resumes/${id}/analysis`);
+  return response.data.data;
+};
+
+export const deleteResumeAnalysis = async (id: string): Promise<void> => {
+  await api.delete(`/resumes/${id}/analysis`);
 };
