@@ -107,3 +107,38 @@ export const getResumeAnalysis = async (id: string): Promise<AnalysisData> => {
 export const deleteResumeAnalysis = async (id: string): Promise<void> => {
   await api.delete(`/resumes/${id}/analysis`);
 };
+
+// --- Job Match API Helpers ---
+
+export interface JobMatchData {
+  _id: string;
+  userId: string;
+  resumeId: string;
+  jobDescription: string;
+  matchScore: number;
+  matchedSkills: string[];
+  missingSkills: string[];
+  matchedKeywords: string[];
+  missingKeywords: string[];
+  strengthsForRole: string[];
+  gapsForRole: string[];
+  recommendations: string[];
+  experienceMatch: string;
+  summary: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const analyzeJobMatch = async (id: string, jobDescription: string): Promise<JobMatchData> => {
+  const response = await api.post(`/resumes/${id}/job-match`, { jobDescription });
+  return response.data.data;
+};
+
+export const getJobMatch = async (id: string): Promise<JobMatchData> => {
+  const response = await api.get(`/resumes/${id}/job-match`);
+  return response.data.data;
+};
+
+export const deleteJobMatch = async (id: string): Promise<void> => {
+  await api.delete(`/resumes/${id}/job-match`);
+};

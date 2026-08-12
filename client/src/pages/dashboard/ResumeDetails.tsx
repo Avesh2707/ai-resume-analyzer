@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { getResume, deleteResume, analyzeResume, getResumeAnalysis, type ResumeData, type AnalysisData } from '@/lib/api';
+import { getResume, deleteResume, analyzeResume, getResumeAnalysis, analyzeJobMatch, getJobMatch, deleteJobMatch, type ResumeData, type AnalysisData, type JobMatchData } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Trash2, FileText, Loader2, AlertCircle, Bot } from 'lucide-react';
 import { AnalysisReport } from '@/components/resume/analysis-report';
+import { JobDescriptionInput } from '@/components/job-match/job-description-input';
+import { JobMatchReport } from '@/components/job-match/job-match-report';
 import axios from 'axios';
 
 export default function ResumeDetails() {
@@ -13,9 +15,11 @@ export default function ResumeDetails() {
   
   const [resume, setResume] = useState<ResumeData | null>(null);
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
+  const [jobMatch, setJobMatch] = useState<JobMatchData | null>(null);
   
   const [loading, setLoading] = useState(true);
   const [analyzing, setAnalyzing] = useState(false);
+  const [matching, setMatching] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -38,6 +42,16 @@ export default function ResumeDetails() {
           // It's okay if analysis doesn't exist yet (404)
           if (axios.isAxiosError(err) && err.response?.status !== 404) {
             console.error('Failed to load analysis:', err);
+          }
+        }
+
+        // Try to fetch existing job match
+        try {
+          const jobMatchData = await getJobMatch(id);
+          setJobMatch(jobMatchData);
+        } catch (err: unknown) {
+          if (axios.isAxiosError(err) && err.response?.status !== 404) {
+            console.error('Failed to load job match:', err);
           }
         }
         
@@ -81,6 +95,34 @@ export default function ResumeDetails() {
       }
     } finally {
       setAnalyzing(false);
+    }
+  };
+
+  const handleAnalyzeJobMatch = async (jobDescription: string) => {
+    if (!id) return;
+    
+    try {
+      setMatching(true);
+      const data = await analyzeJobMatch(id, jobDescription);
+      setJobMatch(data);
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        alert(err.response?.data?.message || 'Failed to analyze job match.');
+      } else {
+        alert('Failed to analyze job match.');
+      }
+    } finally {
+      setMatching(false);
+    }
+  };
+
+  const handleResetJobMatch = async () => {
+    if (!id || !window.confirm('Are you sure you want to delete this job match?')) return;
+    try {
+      await deleteJobMatch(id);
+      setJobMatch(null);
+    } catch (err) {
+      alert('Failed to delete job match.');
     }
   };
 
@@ -183,6 +225,12 @@ export default function ResumeDetails() {
             </Button>
           </CardContent>
         </Card>
+      )}
+
+      {jobMatch ? (
+        <JobMatchReport jobMatch={jobMatch} onReset={handleResetJobMatch} />
+      ) : (
+        <JobDescriptionInput onAnalyze={handleAnalyzeJobMatch} loading={matching} />
       )}
       
       <Card>
