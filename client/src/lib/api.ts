@@ -142,3 +142,37 @@ export const getJobMatch = async (id: string): Promise<JobMatchData> => {
 export const deleteJobMatch = async (id: string): Promise<void> => {
   await api.delete(`/resumes/${id}/job-match`);
 };
+
+// --- Dashboard API Helpers ---
+
+export interface RecentResume {
+  id: string;
+  originalName: string;
+  fileSize: number;
+  createdAt: string;
+  atsScore: number | null;
+  hasAnalysis: boolean;
+}
+
+export interface RecentAnalysis {
+  resumeId: string;
+  resumeName: string;
+  atsScore: number;
+  experienceLevel: string;
+  createdAt: string;
+}
+
+export interface DashboardStats {
+  totalResumes: number;
+  totalAnalyses: number;
+  totalJobMatches: number;
+  averageAtsScore: number;
+  bestAtsScore: number;
+  recentResumes: RecentResume[];
+  recentAnalyses: RecentAnalysis[];
+}
+
+export const getDashboardStats = async (): Promise<DashboardStats> => {
+  const response = await api.get('/dashboard/stats');
+  return response.data.data;
+};

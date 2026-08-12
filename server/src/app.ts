@@ -7,6 +7,7 @@ import authRoute from '@/routes/auth.route';
 import resumeRoute from '@/routes/resume.route';
 import analysisRoute from '@/routes/analysis.route';
 import jobMatchRoute from '@/routes/job-match.route';
+import dashboardRoute from '@/routes/dashboard.route';
 import { errorHandler } from '@/middleware/error.middleware';
 
 const app: Application = express();
@@ -20,6 +21,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/resumes', resumeRoute);
 app.use('/api/resumes', analysisRoute);
 app.use('/api/resumes', jobMatchRoute);
+app.use('/api/dashboard', dashboardRoute);
 
 app.use(errorHandler);
 
