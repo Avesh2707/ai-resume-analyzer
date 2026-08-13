@@ -49,9 +49,9 @@ export default function Home() {
               AI-Powered Resume Intelligence
             </Badge>
 
-            <h1 className="mt-5 font-display text-4xl font-bold leading-[1.2] tracking-tight sm:text-5xl lg:text-6xl text-foreground">
+            <h1 className="mt-5 font-display text-3xl font-bold leading-[1.2] tracking-tight sm:text-5xl lg:text-6xl text-foreground">
               Turn Your Resume Into{' '}
-              <span className="relative inline-block whitespace-nowrap">
+              <span className="relative inline-block">
                 <span className="relative z-10 bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent">
                   Opportunities
                 </span>
@@ -63,13 +63,13 @@ export default function Home() {
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20" asChild>
+              <Button size="lg" className="h-12 px-8 text-base shadow-lg shadow-primary/20 w-full sm:w-auto min-h-[44px]" asChild>
                 <Link to="/dashboard">
                   Upload Resume
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="h-12 px-8 text-base border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 text-foreground" asChild>
+              <Button size="lg" variant="outline" className="h-12 px-8 text-base border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 text-foreground w-full sm:w-auto min-h-[44px]" asChild>
                 <Link to="/dashboard">View Dashboard</Link>
               </Button>
             </div>
@@ -87,7 +87,7 @@ export default function Home() {
           </motion.div>
 
           {/* Glass Card UI Area */}
-          <div className="w-full flex justify-center lg:justify-end mt-12 lg:mt-0">
+          <div className="w-full flex justify-center lg:justify-end mt-12 lg:mt-0 transform scale-90 sm:scale-100 origin-top">
             <HeroAnalysisPreview isExploring={isExploring} />
           </div>
         </div>

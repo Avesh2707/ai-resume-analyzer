@@ -15,6 +15,7 @@ import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 import Overview from '@/pages/dashboard/Overview';
 import ResumeDetails from '@/pages/dashboard/ResumeDetails';
+import Resumes from '@/pages/dashboard/Resumes';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Overview />} />
+            <Route path="/dashboard/resumes" element={<Resumes />} />
             <Route path="/dashboard/resumes/:id" element={<ResumeDetails />} />
           </Route>
         </Route>

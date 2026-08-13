@@ -160,21 +160,21 @@ export default function ResumeDetails() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex-1 space-y-6 p-8 pt-6 max-w-5xl mx-auto w-full"
+      className="flex-1 space-y-6 max-w-5xl mx-auto w-full"
     >
       
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" asChild>
+          <Button variant="ghost" size="icon" asChild className="shrink-0">
             <Link to="/dashboard">
               <ArrowLeft className="h-5 w-5" />
             </Link>
           </Button>
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight truncate max-w-md" title={resume.originalName}>
+          <div className="min-w-0">
+            <h2 className="text-xl sm:text-2xl font-bold tracking-tight truncate max-w-full" title={resume.originalName}>
               {resume.originalName}
             </h2>
-            <p className="text-muted-foreground text-sm flex items-center space-x-2 mt-1">
+            <p className="text-muted-foreground text-sm flex items-center space-x-2 mt-1 truncate">
               <span>{formatFileSize(resume.fileSize)}</span>
               <span>•</span>
               <span>{new Date(resume.createdAt).toLocaleDateString()}</span>
@@ -182,12 +182,12 @@ export default function ResumeDetails() {
           </div>
         </div>
         
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 w-full md:w-auto mt-4 md:mt-0">
           <Button 
             variant="outline" 
             onClick={handleAnalyze} 
             disabled={analyzing}
-            className="border-primary text-primary hover:bg-primary/10"
+            className="border-primary text-primary hover:bg-primary/10 flex-1 md:flex-none min-h-[44px]"
           >
             {analyzing ? (
               <>
@@ -197,11 +197,11 @@ export default function ResumeDetails() {
             ) : (
               <>
                 <Bot className="mr-2 h-4 w-4" />
-                {analysis ? 'Re-analyze Resume' : 'Analyze Resume'}
+                {analysis ? 'Re-analyze' : 'Analyze'}
               </>
             )}
           </Button>
-          <Button variant="destructive" onClick={handleDelete}>
+          <Button variant="destructive" onClick={handleDelete} className="flex-1 md:flex-none min-h-[44px]">
             <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </Button>
@@ -249,7 +249,7 @@ export default function ResumeDetails() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border bg-muted/30 p-4 min-h-[200px] max-h-[400px] overflow-y-auto font-mono text-sm whitespace-pre-wrap">
+          <div className="rounded-md border bg-muted/30 p-4 min-h-[200px] max-h-[400px] overflow-y-auto font-mono text-sm whitespace-pre-wrap break-words">
             {resume.extractedText}
           </div>
         </CardContent>

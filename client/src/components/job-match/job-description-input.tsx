@@ -47,7 +47,7 @@ export function JobDescriptionInput({ onAnalyze, loading }: JobDescriptionInputP
           
           <Button 
             type="submit" 
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto min-h-[44px]"
             disabled={loading || !jobDescription.trim() || jobDescription.length > maxLength}
           >
             {loading ? (

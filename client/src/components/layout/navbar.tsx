@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FileSearch, Menu, LogOut, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { primaryNav } from '@/config/nav';
 import { sidebarNav } from '@/config/sidebar-nav';
@@ -16,7 +15,7 @@ function Logo() {
         <FileSearch className="h-[18px] w-[18px]" strokeWidth={2.25} />
       </span>
       <span>
-        Resume<span className="mark-highlight">AI</span>
+        ResumeAI
       </span>
     </Link>
   );
@@ -57,7 +56,6 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <ThemeToggle />
           {user ? (
             <>
               <Button variant="ghost" size="sm" asChild>
@@ -82,7 +80,6 @@ export function Navbar() {
 
         {/* Mobile controls */}
         <div className="flex items-center gap-1 md:hidden">
-          <ThemeToggle />
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" aria-label="Open menu">
@@ -119,14 +116,23 @@ export function Navbar() {
                 </p>
                 <div className="flex flex-col gap-1">
                   {sidebarNav.map((item) => (
-                    <div
+                    <NavLink
                       key={item.label}
-                      aria-disabled="true"
-                      className="flex cursor-not-allowed items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground/70"
+                      to={item.href}
+                      end={item.href === '/dashboard'}
+                      onClick={() => setMobileOpen(false)}
+                      className={({ isActive }) =>
+                        cn(
+                          'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
+                          isActive
+                            ? 'bg-primary/10 text-primary'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        )
+                      }
                     >
                       <item.icon className="h-[1.1rem] w-[1.1rem] shrink-0" />
                       {item.label}
-                    </div>
+                    </NavLink>
                   ))}
                 </div>
               </div>
@@ -134,21 +140,21 @@ export function Navbar() {
               <div className="mt-auto pt-6 flex flex-col gap-2">
                 {user ? (
                   <>
-                    <Button className="w-full" asChild onClick={() => setMobileOpen(false)}>
+                    <Button className="w-full min-h-[44px]" asChild onClick={() => setMobileOpen(false)}>
                       <Link to="/dashboard">
                         <LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard
                       </Link>
                     </Button>
-                    <Button variant="outline" className="w-full" onClick={() => { handleLogout(); setMobileOpen(false); }}>
+                    <Button variant="outline" className="w-full min-h-[44px]" onClick={() => { handleLogout(); setMobileOpen(false); }}>
                       <LogOut className="mr-2 h-4 w-4" /> Logout
                     </Button>
                   </>
                 ) : (
                   <>
-                    <Button variant="outline" className="w-full" asChild onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" className="w-full min-h-[44px]" asChild onClick={() => setMobileOpen(false)}>
                       <Link to="/login">Login</Link>
                     </Button>
-                    <Button className="w-full" asChild onClick={() => setMobileOpen(false)}>
+                    <Button className="w-full min-h-[44px]" asChild onClick={() => setMobileOpen(false)}>
                       <Link to="/register">Get started</Link>
                     </Button>
                   </>

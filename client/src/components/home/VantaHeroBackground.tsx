@@ -34,7 +34,8 @@ export function VantaHeroBackground({ isExploring = false }: VantaHeroBackground
           console.log("Initializing Vanta");
           const isMobile = window.innerWidth < 768;
           const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-          const points = isMobile ? 8 : isTablet ? 10 : 12;
+          const points = isMobile ? 6 : isTablet ? 10 : 12;
+          const maxDistance = isMobile ? 15 : 20;
           
           effect = window.VANTA.NET({
             el: vantaRef.current,
@@ -48,7 +49,7 @@ export function VantaHeroBackground({ isExploring = false }: VantaHeroBackground
             color: 0x4f7cff, 
             backgroundColor: 0x050816,
             points: points,
-            maxDistance: 20,
+            maxDistance: maxDistance,
             spacing: 15,
             showDots: true,
           });
@@ -125,11 +126,12 @@ export function VantaHeroBackground({ isExploring = false }: VantaHeroBackground
       } else {
         const isMobile = window.innerWidth < 768;
         const isTablet = window.innerWidth >= 768 && window.innerWidth < 1024;
-        const points = isMobile ? 8 : isTablet ? 10 : 12;
+        const points = isMobile ? 6 : isTablet ? 10 : 12;
+        const maxDistance = isMobile ? 15 : 20;
         vantaEffect.setOptions({
           color: 0x4f7cff,
           points: points,
-          maxDistance: 20,
+          maxDistance: maxDistance,
         });
       }
     }

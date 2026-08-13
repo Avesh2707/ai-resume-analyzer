@@ -16,7 +16,7 @@ export function DashboardLayout() {
           onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
           className="sticky top-16 hidden h-[calc(100vh-4rem)] md:flex"
         />
-        <main className="min-w-0 flex-1">
+        <main className="min-w-0 flex-1 pt-8 px-4 sm:px-8 pb-20">
           <Outlet />
         </main>
       </div>

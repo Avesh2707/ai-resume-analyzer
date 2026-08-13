@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { FileSearch, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { sidebarNav } from '@/config/sidebar-nav';
 import { Button } from '@/components/ui/button';
@@ -12,11 +12,6 @@ interface SidebarProps {
   className?: string;
 }
 
-/**
- * Static application sidebar. Items are placeholders (no routes/logic yet) —
- * this component establishes the collapsible, icon-driven layout pattern the
- * real dashboard will use once it exists.
- */
 export function Sidebar({
   collapsed,
   onToggleCollapse,
@@ -58,18 +53,24 @@ export function Sidebar({
           </p>
         )}
         {sidebarNav.map((item) => (
-          <div
+          <NavLink
             key={item.label}
-            aria-disabled="true"
+            to={item.href}
+            end={item.href === '/dashboard'}
             title={collapsed ? item.label : undefined}
-            className={cn(
-              'flex cursor-not-allowed items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium text-muted-foreground/70',
-              collapsed && 'justify-center px-0'
-            )}
+            className={({ isActive }) =>
+              cn(
+                'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
+                isActive
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                collapsed && 'justify-center px-0'
+              )
+            }
           >
             <item.icon className="h-[1.1rem] w-[1.1rem] shrink-0" />
             {!collapsed && <span className="truncate">{item.label}</span>}
-          </div>
+          </NavLink>
         ))}
       </nav>
 

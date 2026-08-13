@@ -48,7 +48,7 @@ export default function Overview() {
 
   if (loading) {
     return (
-      <div className="flex-1 p-8 space-y-6 max-w-7xl mx-auto w-full animate-pulse">
+      <div className="flex-1 space-y-6 max-w-7xl mx-auto w-full animate-pulse">
         <div className="h-10 w-48 bg-muted rounded"></div>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map(i => (
@@ -77,7 +77,7 @@ export default function Overview() {
   if (!stats) return null;
 
   return (
-    <div className="flex-1 space-y-8 p-8 pt-6 max-w-7xl mx-auto w-full pb-20">
+    <div className="flex-1 space-y-8 max-w-7xl mx-auto w-full">
       
       {/* Header */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">

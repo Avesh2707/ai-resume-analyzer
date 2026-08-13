@@ -6,7 +6,7 @@ export function PublicLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="min-w-0 flex-1 flex flex-col">
+      <main className="min-w-0 flex-1 flex flex-col overflow-x-hidden">
         <Outlet />
       </main>
       <Footer />

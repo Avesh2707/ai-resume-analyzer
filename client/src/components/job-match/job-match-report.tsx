@@ -200,8 +200,8 @@ export function JobMatchReport({ jobMatch, onReset }: JobMatchReportProps) {
       </CardContent>
       
       <div className="p-4 border-t bg-muted/10 flex justify-end">
-        <Button variant="outline" size="sm" onClick={onReset} className="text-muted-foreground hover:text-foreground">
-          <Trash2 className="h-4 w-4 mr-2" />
+        <Button variant="outline" size="sm" onClick={onReset} className="text-muted-foreground hover:text-foreground w-full sm:w-auto min-h-[44px]">
+          <Trash2 className="h-4 w-4 mr-2 shrink-0" />
           Re-Analyze with New Job Description
         </Button>
       </div>
