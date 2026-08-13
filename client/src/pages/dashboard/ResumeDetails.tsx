@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getResume, deleteResume, analyzeResume, getResumeAnalysis, analyzeJobMatch, getJobMatch, deleteJobMatch, type ResumeData, type AnalysisData, type JobMatchData } from '@/lib/api';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { motion } from 'framer-motion';
 import { ArrowLeft, Trash2, FileText, Loader2, AlertCircle, Bot } from 'lucide-react';
 import { AnalysisReport } from '@/components/resume/analysis-report';
 import { JobDescriptionInput } from '@/components/job-match/job-description-input';
@@ -156,7 +157,11 @@ export default function ResumeDetails() {
   }
 
   return (
-    <div className="flex-1 space-y-6 p-8 pt-6 max-w-5xl mx-auto w-full">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex-1 space-y-6 p-8 pt-6 max-w-5xl mx-auto w-full"
+    >
       
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -249,6 +254,6 @@ export default function ResumeDetails() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   );
 }

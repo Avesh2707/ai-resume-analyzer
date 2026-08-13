@@ -9,6 +9,7 @@ import {
   FileText, Bot, Target, TrendingUp, AlertCircle, 
   Upload, ChevronRight, Activity, Clock
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import axios from 'axios';
 
 export default function Overview() {
@@ -93,22 +94,29 @@ export default function Overview() {
       </div>
 
       {showUploader && (
-        <Card className="border-primary/20 shadow-sm animate-in fade-in slide-in-from-top-4">
-          <CardHeader>
-            <CardTitle>Upload New Resume</CardTitle>
-            <CardDescription>Upload a PDF resume to extract its text and begin analysis.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ResumeUploader onUploadSuccess={() => {
-              setShowUploader(false);
-              fetchStats();
-            }} />
-          </CardContent>
-        </Card>
+        <motion.div>
+          <Card className="border-primary/20 shadow-sm animate-in fade-in slide-in-from-top-4">
+            <CardHeader>
+              <CardTitle>Upload New Resume</CardTitle>
+              <CardDescription>Upload a PDF resume to extract its text and begin analysis.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResumeUploader onUploadSuccess={() => {
+                setShowUploader(false);
+                fetchStats();
+              }} />
+            </CardContent>
+          </Card>
+        </motion.div>
       )}
 
       {/* KPI Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <motion.div 
+        className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, staggerChildren: 0.1 }}
+      >
         <Card className="group hover:shadow-md transition-all">
           <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
             <CardTitle className="text-sm font-medium">Total Resumes</CardTitle>
@@ -159,7 +167,7 @@ export default function Overview() {
             <p className="text-xs text-muted-foreground mt-1">Across all analyses</p>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* ATS Performance & Empty States logic */}
       {stats.totalResumes === 0 ? (

@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/context/auth-context';
-import { AppLayout } from '@/components/layout/app-layout';
+import { PublicLayout } from '@/components/layout/public-layout';
+import { DashboardLayout } from '@/components/layout/dashboard-layout';
 import { ProtectedRoute } from '@/components/auth/protected-route';
 import { GuestRoute } from '@/components/auth/guest-route';
 
@@ -20,7 +21,7 @@ function App() {
     <AuthProvider>
       <Routes>
         {/* Public/Marketing Routes */}
-        <Route element={<AppLayout />}>
+        <Route element={<PublicLayout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/features" element={<Features />} />
@@ -36,7 +37,7 @@ function App() {
 
         {/* Protected Routes (Only accessible if logged in) */}
         <Route element={<ProtectedRoute />}>
-          <Route element={<AppLayout />}>
+          <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Overview />} />
             <Route path="/dashboard/resumes/:id" element={<ResumeDetails />} />
           </Route>
