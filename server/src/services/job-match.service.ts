@@ -2,8 +2,11 @@ import { GoogleGenAI, Type, Schema } from '@google/genai';
 import { env } from '@/config/env';
 
 let ai: GoogleGenAI | null = null;
+
 if (env.geminiApiKey) {
-  ai = new GoogleGenAI({ apiKey: env.geminiApiKey });
+  ai = new GoogleGenAI({
+    apiKey: env.geminiApiKey,
+  });
 }
 
 export interface JobMatchAIResult {
@@ -24,52 +27,86 @@ const jobMatchSchema: Schema = {
   properties: {
     matchScore: {
       type: Type.INTEGER,
-      description: 'Overall match score between 0 and 100 based on how well the resume fits the job description.',
+      description:
+        'Overall match score between 0 and 100 based on how well the resume fits the job description.',
     },
+
     matchedSkills: {
       type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: 'List of skills found in both the resume and the job description.',
+      items: {
+        type: Type.STRING,
+      },
+      description:
+        'List of skills found in both the resume and the job description.',
     },
+
     missingSkills: {
       type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: 'List of essential skills required by the job description but missing from the resume.',
+      items: {
+        type: Type.STRING,
+      },
+      description:
+        'List of essential skills required by the job description but missing from the resume.',
     },
+
     matchedKeywords: {
       type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: 'Important keywords or domain terms found in both.',
+      items: {
+        type: Type.STRING,
+      },
+      description:
+        'Important keywords or domain terms found in both the resume and job description.',
     },
+
     missingKeywords: {
       type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: 'Important keywords or domain terms required by the job description but missing from the resume.',
+      items: {
+        type: Type.STRING,
+      },
+      description:
+        'Important keywords or domain terms required by the job description but missing from the resume.',
     },
+
     strengthsForRole: {
       type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: 'Specific strengths the candidate has for this specific role.',
+      items: {
+        type: Type.STRING,
+      },
+      description:
+        'Specific strengths the candidate has for this specific role.',
     },
+
     gapsForRole: {
       type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: 'Specific gaps or shortcomings the candidate has for this specific role.',
+      items: {
+        type: Type.STRING,
+      },
+      description:
+        'Specific gaps or shortcomings the candidate has for this specific role.',
     },
+
     recommendations: {
       type: Type.ARRAY,
-      items: { type: Type.STRING },
-      description: 'Actionable recommendations for tailoring the resume to this specific job description.',
+      items: {
+        type: Type.STRING,
+      },
+      description:
+        'Actionable recommendations for tailoring the resume to this specific job description.',
     },
+
     experienceMatch: {
       type: Type.STRING,
-      description: 'An assessment of how well the candidate\'s experience level matches the role\'s required experience.',
+      description:
+        "An assessment of how well the candidate's experience level matches the role's required experience.",
     },
+
     summary: {
       type: Type.STRING,
-      description: 'A brief overall summary of the candidate\'s fit for the role.',
+      description:
+        "A brief overall summary of the candidate's fit for the role.",
     },
   },
+
   required: [
     'matchScore',
     'matchedSkills',
@@ -84,7 +121,10 @@ const jobMatchSchema: Schema = {
   ],
 };
 
-export const analyzeJobMatch = async (resumeText: string, jobDescription: string): Promise<JobMatchAIResult> => {
+export const analyzeJobMatch = async (
+  resumeText: string,
+  jobDescription: string
+): Promise<JobMatchAIResult> => {
   if (!ai) {
     throw new Error('Gemini API key is not configured.');
   }
@@ -97,16 +137,23 @@ export const analyzeJobMatch = async (resumeText: string, jobDescription: string
     throw new Error('Job description is empty.');
   }
 
-  const safeResumeText = resumeText.substring(0, 50000);
-  const safeJobDescription = jobDescription.substring(0, 10000);
+  // Limit input size to keep Gemini requests fast and reliable.
+  const safeResumeText = resumeText.trim().substring(0, 30000);
+  const safeJobDescription = jobDescription.trim().substring(0, 8000);
 
   const prompt = `
-You are an expert Applicant Tracking System (ATS) and Technical Recruiter.
-Analyze the following extracted resume text against the provided job description and output a structured assessment.
+You are an expert ATS and technical recruiter.
 
-Do not hallucinate skills that are not present in the resume.
-Do not assume experience that is not explicitly present.
-Base your analysis only on the resume text and job description.
+Compare the resume against the job description.
+
+Rules:
+- Only use information explicitly present in the resume.
+- Do not invent skills, experience, projects, or qualifications.
+- Identify matched and missing skills.
+- Identify important matched and missing keywords.
+- Evaluate the candidate's experience for this role.
+- Give practical recommendations for improving the resume.
+- Return only the requested JSON structure.
 
 RESUME:
 """
@@ -122,23 +169,37 @@ ${safeJobDescription}
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3.5-flash',
+
       contents: prompt,
+
       config: {
         responseMimeType: 'application/json',
         responseSchema: jobMatchSchema,
+
+        // Allow enough time for Gemini to complete the request.
+        httpOptions: {
+          timeout: 120000,
+        },
       },
     });
 
     const text = response.text;
+
     if (!text) {
       throw new Error('Empty response from Gemini');
     }
 
     const json = JSON.parse(text) as JobMatchAIResult;
+
     return json;
   } catch (error: unknown) {
     const err = error as Error;
-    console.error('Gemini API Error (Job Match):', err?.message || err);
+
+    console.error('Gemini API Error (Job Match):', {
+      message: err?.message,
+      name: err?.name,
+    });
+
     throw new Error('Failed to analyze job match with AI.');
   }
 };
